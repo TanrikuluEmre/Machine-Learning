@@ -1,43 +1,44 @@
-import tensorflow as tf
+import numpy as np
 
 # Input1, input2 ve bias
-train_in = [
+train_in = np.array([
     [1., 1., 1],
     [1., 0, 1],
     [0, 1., 1],
     [0, 0, 1]
-]
+])
 # Output
-train_out = [
+train_out = np.array([
     [1.],
     [0],
     [0],
     [0]
-]
+])
 
 # Random_normal() kullanarak rasgele değerler ile başlatılan ağırlık değişkeni
-w = tf.Variable(tf.random.normal([3, 1], seed=12))
+np.random.seed(12)
+w = np.random.normal(size=(3, 1))
 
-# Girdi ve çıktı için tensor tanımla
-x = tf.Variable(train_in, dtype=tf.float32)
-y = tf.Variable(train_out, dtype=tf.float32)
+# Sigmoid aktivasyon fonksiyonu
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
 
-# Output(çıktıyı) hesapla.
-output = tf.nn.relu(tf.matmul(x, w))
+# Çıktıyı hesapla
+output = sigmoid(np.dot(train_in, w))
 
-# Mean Squared Loss or Error(Ortalama Kareli Hata)
-loss = tf.reduce_sum(tf.square(output - y))
+# Hata hesapla
+loss = np.sum((output - train_out) ** 2)
 
-# 0.01'lik bir öğrenme oranıyla GradientDescentOptimizer kullanarak kaybı en aza indirin.
-optimizer = tf.keras.optimizers.SGD(0.01)
+# 0.01'lik bir öğrenme oranıyla Gradient Descent kullanarak kaybı en aza indirin.
+learning_rate = 0.01
 
-# Gradyanları hesapla ve optimize et
-with tf.GradientTape() as tape:
-    output = tf.nn.relu(tf.matmul(x, w))
-    loss = tf.reduce_sum(tf.square(output - y))
-grads = tape.gradient(loss, [w])
-optimizer.apply_gradients(zip(grads, [w]))
+# Gradyan inişi ile ağırlıkları güncelle
+for i in range(1000):
+    output = sigmoid(np.dot(train_in, w))
+    error = train_out - output
+    w += learning_rate * np.dot(train_in.T, error * output * (1 - output))
 
 # Giriş vektörüne göre çıktı ve maliyeti hesaplayın
-cost = tf.reduce_sum(tf.square(output - y))
+output = sigmoid(np.dot(train_in, w))
+cost = np.sum((output - train_out) ** 2)
 print('Loss:', cost)
