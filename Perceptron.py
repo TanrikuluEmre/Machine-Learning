@@ -29,7 +29,7 @@ output = sigmoid(np.dot(train_in, w))
 # Hata hesapla
 loss = np.sum((output - train_out) ** 2)
 
-# 0.01'lik bir öğrenme oranıyla Gradient Descent kullanarak kaybı en aza indirin.
+# 0.01'lik bir öğrenme oranıyla Gradient Descent kullanarak kaybı en aza indir
 learning_rate = 0.01
 
 # Gradyan inişi ile ağırlıkları güncelle
@@ -38,7 +38,7 @@ for i in range(1000):
     error = train_out - output
     w += learning_rate * np.dot(train_in.T, error * output * (1 - output))
 
-# Giriş vektörüne göre çıktı ve maliyeti hesaplayın
+# Giriş vektörüne göre çıktı ve maliyeti hesapla
 output = sigmoid(np.dot(train_in, w))
 cost = np.sum((output - train_out) ** 2)
 print('Loss:', cost)
